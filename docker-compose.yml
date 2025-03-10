@@ -1,0 +1,7 @@
+services:
+  build-cleanrip:
+    build:
+      context: .
+    container_name: build
+    volumes:
+      - ${CLEANRIP_DIR}:/cleanrip/
