@@ -79,64 +79,6 @@ enum discTypes
 	IS_UNK_DISC
 };
 
-enum options
-{
-	NGC_SHRINK_ISO=0,
-	NGC_ALIGN_FILES,
-	NGC_ALIGN_BOUNDARY,
-	WII_DUAL_LAYER,
-	WII_CHUNK_SIZE,
-	WII_NEWFILE
-};
-
-enum shrinkOptions
-{
-  SHRINK_NONE=0,
-  SHRINK_PAD_GARBAGE,
-  SHRINK_ALL,
-  SHRINK_DELIM
-};
-
-enum alignOptions
-{
-  ALIGN_ALL=0,
-  ALIGN_AUDIO,
-  ALIGN_DELIM
-};
-
-enum alignBoundaryOptions
-{
-  ALIGN_32=0,
-  ALIGN_2,
-  ALIGN_512,
-  ALIGNB_DELIM
-};
-
-enum dualOptions
-{
-  AUTO_DETECT=0,
-  SINGLE_MINI,
-  SINGLE_LAYER,
-  DUAL_LAYER,
-  DUAL_DELIM
-};
-
-enum chunkOptions
-{
-  CHUNK_1GB=0,
-  CHUNK_2GB,
-  CHUNK_3GB,
-  CHUNK_MAX,
-  CHUNK_DELIM
-};
-
-enum newFileOptions
-{
-  ASK_USER=0,
-  AUTO_CHUNK,
-  NEWFILE_DELIM
-};
-
 enum settingsAskStatus
 {
 	NOT_ASKED,

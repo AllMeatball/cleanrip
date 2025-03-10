@@ -41,6 +41,7 @@
 #include "sha1.h"
 #include "md5.h"
 #include <fat.h>
+#include "settings.h"
 #include "m2loader/m2loader.h"
 
 #define DEFAULT_FIFO_SIZE    (256*1024)//(64*1024) minimum
@@ -83,7 +84,6 @@ int verify_in_use = 0;
 int verify_disc_type = 0;
 GXRModeObj *vmode = NULL;
 u32 *xfb[2] = { NULL, NULL };
-int options_map[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
 enum {
 	MSG_SETFILE,
@@ -772,101 +772,6 @@ int filesystem_type() {
 	}
 	while ((get_buttons_pressed() & PAD_BUTTON_A));
 	return type;
-}
-
-char *getShrinkOption() {
-	int opt = options_map[NGC_SHRINK_ISO];
-	if (opt == SHRINK_ALL)
-		return "Shrink All";
-	else if (opt == SHRINK_PAD_GARBAGE)
-		return "Wipe Garbage";
-	else if (opt == SHRINK_NONE)
-		return "No";
-	return 0;
-}
-
-char *getAlignOption() {
-	int opt = options_map[NGC_ALIGN_FILES];
-	if (opt == ALIGN_ALL)
-		return "Align All";
-	else if (opt == ALIGN_AUDIO)
-		return "Audio Only";
-	return 0;
-}
-
-char *getAlignmentBoundaryOption() {
-	int opt = options_map[NGC_ALIGN_BOUNDARY];
-	if (opt == ALIGN_32)
-		return "32Kb";
-	else if (opt == ALIGN_2)
-		return "2KB";
-	else if (opt == ALIGN_512)
-		return "512B";
-	return 0;
-}
-
-char *getDualLayerOption() {
-	int opt = options_map[WII_DUAL_LAYER];
-	if (opt == AUTO_DETECT)
-		return "Auto";
-	else if (opt == SINGLE_MINI)
-		return "1.4GB";
-	else if (opt == SINGLE_LAYER)
-		return "4.4GB";
-	else if (opt == DUAL_LAYER)
-		return "8GB";
-	return 0;
-}
-
-char *getNewFileOption() {
-	int opt = options_map[WII_NEWFILE];
-	if (opt == ASK_USER)
-		return "Yes";
-	else if (opt == AUTO_CHUNK)
-		return "No";
-	return 0;
-}
-
-char *getChunkSizeOption() {
-	int opt = options_map[WII_CHUNK_SIZE];
-	if (opt == CHUNK_1GB)
-		return "1GB";
-	else if (opt == CHUNK_2GB)
-		return "2GB";
-	else if (opt == CHUNK_3GB)
-		return "3GB";
-	else if (opt == CHUNK_MAX)
-		return "Max";
-	return 0;
-}
-
-int getMaxPos(int option_pos) {
-	switch (option_pos) {
-	case WII_DUAL_LAYER:
-		return DUAL_DELIM;
-	case WII_CHUNK_SIZE:
-		return CHUNK_DELIM;
-	case NGC_ALIGN_BOUNDARY:
-		return ALIGNB_DELIM;
-	case NGC_ALIGN_FILES:
-		return ALIGN_DELIM;
-	case NGC_SHRINK_ISO:
-		return SHRINK_DELIM;
-	case WII_NEWFILE:
-		return NEWFILE_DELIM;
-	}
-	return 0;
-}
-
-void toggleOption(int option_pos, int dir) {
-	int max = getMaxPos(option_pos);
-	if (options_map[option_pos] + dir >= max) {
-		options_map[option_pos] = 0;
-	} else if (options_map[option_pos] + dir < 0) {
-		options_map[option_pos] = max - 1;
-	} else {
-		options_map[option_pos] += dir;
-	}
 }
 
 static void get_settings(int disc_type) {
