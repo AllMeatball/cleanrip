@@ -1,5 +1,8 @@
 build/
+boot.dol
 cleanrip.elf
 cleanrip.dol
 cleanrip-gc.dol
 cleanrip-gc.elf
+cleanrip.zip
+compile_commands.json
