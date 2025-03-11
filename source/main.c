@@ -69,6 +69,7 @@ static DISC_INTERFACE* m2loader = &__io_m2ldr;
 static DISC_INTERFACE* usb = NULL;
 #endif
 
+static int xmlSettingsApplied = 0;
 static int calcChecksums = 0;
 static int dumpCounter = 0;
 static char gameName[32];
@@ -76,6 +77,8 @@ static char internalName[512];
 static char mountPath[512];
 static char wpadNeedScan = 0;
 static char padNeedScan = 0;
+static char *error_str = "No error";
+
 int print_usb = 0;
 int shutdown = 0;
 int whichfb = 0;
@@ -830,6 +833,18 @@ static void get_settings(int disc_type) {
 		while (get_buttons_pressed() & (PAD_BUTTON_RIGHT | PAD_BUTTON_LEFT | PAD_BUTTON_A | PAD_BUTTON_UP | PAD_BUTTON_DOWN));
 	}
 	while(get_buttons_pressed() & PAD_BUTTON_B);
+
+	error_str = "No error";
+	sprintf(txtbuffer, "%scleanrip-settings.xml", &mountPath[0]);
+
+	if (Settings_write(&mountPath[0], &error_str) != 0) {
+		DrawFrameStart();
+		DrawEmptyBox(30, 180, vmode->fbWidth - 38, 350, COLOR_BLACK);
+		WriteCentre(230, "Failed to read settings");
+		WriteCentre(255, error_str);
+		WriteCentre(315, "Press  A  to continue");
+		wait_press_A();
+	}
 }
 
 void prompt_new_file(FILE **fp, int chunk, int type, int fs, int silent) {
@@ -1358,6 +1373,21 @@ int main(int argc, char **argv) {
 			do {
 				ret = initialise_device(type, fs);
 			} while (ret != 1);
+
+			error_str = "No error";
+			if (Settings_read(&mountPath[0], &error_str) != 0) {
+				DrawFrameStart();
+				DrawEmptyBox(30, 180, vmode->fbWidth - 38, 350, COLOR_BLACK);
+				WriteCentre(230, "Failed to read settings");
+				WriteCentre(255, error_str);
+				WriteCentre(315, "Press  A  to continue");
+				wait_press_A();
+			} else {
+				DrawFrameStart();
+				DrawEmptyBox(30, 180, vmode->fbWidth - 38, 350, COLOR_BLACK);
+				WriteCentre(255, "Loaded settings succesfully");
+				sleep(1);
+			}
 		}
 
 		if(calcChecksums) {
@@ -1384,7 +1414,7 @@ int main(int argc, char **argv) {
 			disc_type = force_disc();
 		}
 
-		if(reuseSettings == NOT_ASKED || reuseSettings == ANSWER_NO) {
+		if((reuseSettings == NOT_ASKED || reuseSettings == ANSWER_NO) && !xmlSettingsApplied) {
 			if (disc_type == IS_WII_DISC) {
 				get_settings(disc_type);
 			}
@@ -1401,13 +1431,13 @@ int main(int argc, char **argv) {
 				calcChecksums = 1;
 			}
 		}
-		
-		if(reuseSettings == NOT_ASKED) {
-			if(DrawYesNoDialog("Remember settings?",
-								 "Will only ask again next session")) {
-				reuseSettings = ANSWER_YES;
-			}
-		}
+
+		// if(reuseSettings == NOT_ASKED) {
+		// 	if(DrawYesNoDialog("Remember settings?",
+		// 						 "Will only ask again next session")) {
+		// 		reuseSettings = ANSWER_YES;
+		// 	}
+		// }
 
 		verify_in_use = verify_is_available(disc_type);
 		verify_disc_type = disc_type;

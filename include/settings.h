@@ -2,7 +2,7 @@
  * CleanRip - settings.h
  * Copyright (C) 2025 AllMeatball
  *
- * Persisent settings reading/writing.
+ * persistent settings reading/writing.
  *
  * CleanRip homepage: http://code.google.com/p/cleanrip/
  * email address: emukidid@gmail.com
@@ -88,3 +88,6 @@ char *getAlignmentBoundaryOption();
 char *getDualLayerOption();
 char *getNewFileOption();
 char *getChunkSizeOption();
+
+int Settings_write(char *mount_path, char **error_str);
+int Settings_read(char *mount_path, char **error_str);
